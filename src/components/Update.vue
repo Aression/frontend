@@ -4,25 +4,35 @@
     <h1>Result for input:{{ outputValue }}</h1>
     <h2>
       <a-input
+        placeholder="input user id here"
+        v-model="inputUserID"
+        allowClear
+        :style="style"
+        @blur="id($event)"
+      ></a-input>
+    </h2>
+    <h3>
+      <a-input
         placeholder="input user name here"
         v-model="inputUserName"
         allowClear
         :style="style"
-        @blur="len($event)"
+        @blur="name($event)"
       ></a-input>
-    </h2>
-    <h3>
+    </h3>
+    <h4>
       <a-input
         placeholder="input user age here"
         v-model="inputUserAge"
         allowClear
         :style="style"
-        @blur="number($event)"
+        @blur="age($event)"
       ></a-input>
-    </h3>
-    <h4>
-      <a-button type="primary" @click="getValue">Submit change Now!</a-button>
     </h4>
+    
+    <h5>
+      <a-button type="primary" @click="getValue">Update Now!</a-button>
+    </h5>
   </div>
 </template>
 
@@ -34,7 +44,9 @@ export default {
     return {
       inputUserName: "",
       inputUserAge: "",
+      inputUserID:"",
       outputValue: "",
+      userIdValid:"",
       userNameValid: false,
       userAgeValid: false,
       style: { width: "200px" },
@@ -48,7 +60,18 @@ export default {
           "Server processed-" + this.inputUserName + "-" + this.inputUserAge;
       }
     },
-    len(e) {
+    id(e){
+      console.log(e.target.value);
+      let flag = new RegExp("^[1-9]([0-9])*$").test(e.target.value);
+      console.log(flag);
+      if (!flag) {
+        this.$message("请输入为正整数的用户id！");
+        this.userIdValid = false;
+      } else {
+        this.userIdValid = true;
+      }
+    },
+    name(e) {
       console.log(e.target.value);
       let flag = e.target.value.length >= 2;
       console.log(flag);
@@ -59,12 +82,12 @@ export default {
         this.userNameValid = true;
       }
     },
-    number(e) {
+    age(e) {
       console.log(e.target.value);
       let flag = new RegExp("^[1-9]([0-9])*$").test(e.target.value);
       console.log(flag);
       if (!flag) {
-        this.$message("请输入正整数！");
+        this.$message("请输入为正整数的用户年龄！");
         this.userAgeValid = false;
       } else {
         this.userAgeValid = true;

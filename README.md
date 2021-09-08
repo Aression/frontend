@@ -1,10 +1,10 @@
 # frontend
 
-> A Vue.js project
+> A Vue.js project template for personal use
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
