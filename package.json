@@ -1,6 +1,6 @@
 {
-  "name": "frontend",
-  "version": "1.0.0",
+  "name": "mongodb_edit_fontend",
+  "version": "2.3.3",
   "description": "A Vue.js project",
   "author": "Aression <1040901628@qq.com>",
   "private": true,
