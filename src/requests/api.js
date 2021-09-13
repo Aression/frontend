@@ -12,7 +12,7 @@ export const createUser = (userInfo) => Network.get('/add', {
 });
 // R
 export const findUser = (userId) => Network.get('/findById', {
-  userId: userId
+  userId: userId.userId
 });
 export const findAllUser = () => Network.get('/findAll', {});
 // U
@@ -23,5 +23,5 @@ export const updateUser = (userInfo) => Network.get('/update', {
 });
 // D
 export const deleteUser = (userId) => Network.get('/delete', {
-  userId: userId
+  userId: userId.userId
 });

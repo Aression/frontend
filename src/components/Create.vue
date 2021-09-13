@@ -1,7 +1,13 @@
 
 <template>
   <div class="Create">
-    <h1>Result for input:{{ outputValue }}</h1>
+    <h1>
+      Result for input:
+      <div>当前状态：{{ outputStatus }}</div>
+
+      <div>创建时间：{{ outputTime }}</div>
+      <div>用户信息：{{ outputValue }}</div>
+    </h1>
     <h2>
       <a-input
         placeholder="input user id here"
@@ -29,7 +35,7 @@
         @blur="age($event)"
       ></a-input>
     </h4>
-    
+
     <h5>
       <a-button type="primary" @click="getValue">Submit Now!</a-button>
     </h5>
@@ -37,16 +43,21 @@
 </template>
 
 
+
 <script>
+import * as API from "../requests/api";
+
 export default {
   name: "Create",
   data() {
     return {
+      outputTime: "[]",
+      outputStatus: "还没提交呢",
       inputUserName: "",
       inputUserAge: "",
-      inputUserID:"",
-      outputValue: "",
-      userIdValid:false,
+      inputUserID: "",
+      outputValue: "[]",
+      userIdValid: false,
       userNameValid: false,
       userAgeValid: false,
       style: { width: "200px" },
@@ -54,23 +65,32 @@ export default {
   },
   methods: {
     getValue() {
-      //todo: 拿着id向后台要数据，然后显示到上面去
       if (this.userNameValid && this.userAgeValid) {
-        createUser({
-          userId:this.inputUserID,
-          name:this.inputUserName,
-          age:this.inputUserAge
-        }).then(res=>{
-            console.log(res)
-            this.outputValue =
-          "Server processed-" + res;
+        API.createUser({
+          userId: this.inputUserID,
+          name: this.inputUserName,
+          age: this.inputUserAge,
         })
-        
+          .then((res) => {
+            this.$message("创建成功");
+            console.log("用户：" + res.name + "创建成功");
+            this.outputStatus = "创建成功";
+            this.outputValue =
+              "[" + res.userId + "-" + res.name + "-" + res.age + "]";
+            this.outputTime = "[" + res.createTime + "]";
+          })
+          .catch((error) => {
+            this.outputStatus = "创建失败";
+            this.outputValue = "[]";
+            this.outputTime = "[]";
+            console.log(error);
+            this.$message("id重复！");
+          });
       }
     },
-    id(e){
+    id(e) {
       console.log(e.target.value);
-      let flag = new RegExp("^[1-9]([0-9])*$").test(e.target.value);
+      let flag = new RegExp("^[0-9]([0-9])*$").test(e.target.value);
       console.log(flag);
       if (!flag) {
         this.$message("请输入为正整数的用户id！");

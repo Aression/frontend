@@ -1,7 +1,12 @@
 
 <template>
   <div class="Update">
-    <h1>Result for input:{{ outputValue }}</h1>
+    <h1>
+      <div>当前状态：{{ outputStatus }}</div>
+
+      <div>创建时间：{{ outputTime }}</div>
+      <div>用户信息：{{ outputValue }}</div>
+    </h1>
     <h2>
       <a-input
         placeholder="input user id here"
@@ -29,7 +34,7 @@
         @blur="age($event)"
       ></a-input>
     </h4>
-    
+
     <h5>
       <a-button type="primary" @click="getValue">Update Now!</a-button>
     </h5>
@@ -38,15 +43,18 @@
 
 
 <script>
+import * as API from "../requests/api";
 export default {
   name: "Update",
   data() {
     return {
       inputUserName: "",
       inputUserAge: "",
-      inputUserID:"",
-      outputValue: "",
-      userIdValid:"",
+      inputUserID: "",
+      outputStatus: "还没提交呐",
+      outputTime: "[]",
+      outputValue: "[]",
+      userIdValid: false,
       userNameValid: false,
       userAgeValid: false,
       style: { width: "200px" },
@@ -55,14 +63,34 @@ export default {
   methods: {
     getValue() {
       //todo: 拿着id向后台要数据，然后显示到上面去
-      if (this.userNameValid && this.userAgeValid) {
-        this.outputValue =
-          "Server processed-" + this.inputUserName + "-" + this.inputUserAge;
+      if (this.userIdValid && this.userNameValid && this.userAgeValid) {
+        // this.outputValue =
+        //   "Server processed-" + this.inputUserName + "-" + this.inputUserAge;
+        API.updateUser({
+          userId: this.inputUserID,
+          name: this.inputUserName,
+          age: this.inputUserAge,
+        })
+          .then((res) => {
+            this.$message("更改成功");
+            console.log("用户：" + res.name + "更改成功");
+            this.outputStatus = "更改成功";
+            this.outputValue =
+              "[" + res.userId + "-" + res.name + "-" + res.age + "]";
+            this.outputTime = "[" + res.createTime + "]";
+          })
+          .catch((error) => {
+            this.outputStatus = "更改失败";
+            this.outputValue = "[]";
+            this.outputTime = "[]";
+            console.log(error);
+            this.$message("没有这个用户！");
+          });
       }
     },
-    id(e){
+    id(e) {
       console.log(e.target.value);
-      let flag = new RegExp("^[1-9]([0-9])*$").test(e.target.value);
+      let flag = new RegExp("^[0-9]([0-9])*$").test(e.target.value);
       console.log(flag);
       if (!flag) {
         this.$message("请输入为正整数的用户id！");
